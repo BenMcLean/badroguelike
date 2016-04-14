@@ -7,7 +7,7 @@ public class GameWorld {
     public static final int SIZE_X = 64;
     public static final int SIZE_Y = 64;
 
-    private DungeonGenerator dungeonGen = new DungeonGenerator();
+    private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private char[][] bareDungeon, lineDungeon;
 
     private int playerX=4;
@@ -30,21 +30,12 @@ public class GameWorld {
     }
 
     public GameWorld () {
-        //dungeonGen.generate(bareDungeon);
+        bareDungeon = dungeonGen.generate();
     }
 
     public Boolean isWall (int x, int y) {
         if (x < 0 || y < 0 || x > SIZE_X || y > SIZE_Y) return null;
         if (x == 0 || y == 0 || x == SIZE_X-1 || y == SIZE_Y-1) return true;
-        return false;
-//        //if (x == 0 && y == 2) return false;
-//        if (x >= 0 && y >= 0 && x <= 8 && y <= 8)
-//            if (x == 0 || y == 0 || x == 8 || y == 8)
-//                return true;
-//            else
-//                return false;
-//        else
-//            return null;
+        return bareDungeon[x][y] == '#';
     }
 }
-
