@@ -21,6 +21,8 @@ import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
 
 public class GameScreen implements Screen {
+    public static final int VIRTUAL_WIDTH = 64;
+    public static final int VIRTUAL_HEIGHT = 64;
     public Assets assets = new Assets();
     private Color color = Color.BLACK;
     private Viewport gameView;
@@ -34,7 +36,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        gameView = new FitViewport(64, 64); // This is the internal resolution your game will display regardless of window size
+        gameView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT); // This is the internal resolution your game will display regardless of window size
         batch = new SpriteBatch();
 
         map = new TiledMap();
@@ -92,4 +94,11 @@ public class GameScreen implements Screen {
     public void pause() {}
     @Override
     public void resume() {}
+
+    public static void toggleFullscreen() {
+        if (Gdx.graphics.isFullscreen())
+            Gdx.graphics.setWindowedMode(VIRTUAL_WIDTH*12, VIRTUAL_HEIGHT*12);
+        else
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+    }
 }

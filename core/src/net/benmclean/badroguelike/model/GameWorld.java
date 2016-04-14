@@ -10,6 +10,7 @@ public class GameWorld {
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private char[][] bareDungeon, lineDungeon;
 
+    // Coord pt = generator.utility.randomFloor(myCharArray2D); would give a better starting place
     private int playerX=4;
     private int playerY=4;
     public int getPlayerX(){return playerX;}

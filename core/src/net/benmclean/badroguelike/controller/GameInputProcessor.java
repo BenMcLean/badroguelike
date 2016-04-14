@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import net.benmclean.badroguelike.model.Direction;
 import net.benmclean.badroguelike.model.GameWorld;
+import net.benmclean.badroguelike.view.GameScreen;
 
 import java.util.*;
 
@@ -45,8 +46,8 @@ public class GameInputProcessor implements InputProcessor {
     public boolean keyDown(int keycode) {
         if (TRACKED_KEYS.contains(keycode)) keyPressed[keyInt(keycode)] = true;
 
-//        if (keycode == Input.Keys.ENTER && (keyPressed[keyInt(Input.Keys.ALT_LEFT)] || keyPressed[keyInt(Input.Keys.ALT_RIGHT)]))
-//            toggleFullscreen();
+        if (keycode == Input.Keys.ENTER && (keyPressed[keyInt(Input.Keys.ALT_LEFT)] || keyPressed[keyInt(Input.Keys.ALT_RIGHT)]))
+            GameScreen.toggleFullscreen();
         timeSinceRepeat = 0;
         moveFromInput(keycode);
         return true;
