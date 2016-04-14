@@ -39,9 +39,9 @@ public class GameScreen implements Screen {
 
         map = new TiledMap();
         MapLayers layers = map.getLayers();
-        TiledMapTileLayer layer = new TiledMapTileLayer(150, 100, 8, 8);
-        for (int x = 0; x < 150; x++) {
-            for (int y = 0; y < 100; y++) {
+        TiledMapTileLayer layer = new TiledMapTileLayer(world.SIZE_X, world.SIZE_Y, 8, 8);
+        for (int x = 0; x < world.SIZE_X; x++) {
+            for (int y = 0; y < world.SIZE_Y; y++) {
                 StaticTiledMapTile tile=null;
                 Boolean answer = world.isWall(x, y);
                 if (answer != null && !answer)
