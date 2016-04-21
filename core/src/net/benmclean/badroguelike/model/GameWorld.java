@@ -1,5 +1,6 @@
 package net.benmclean.badroguelike.model;
 
+import squidpony.squidgrid.mapping.ClassicRogueMapGenerator;
 import squidpony.squidgrid.mapping.DungeonGenerator;
 
 public class GameWorld {
@@ -9,6 +10,7 @@ public class GameWorld {
 
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private char[][] bareDungeon, lineDungeon;
+    private ClassicRogueMapGenerator rogueGen;
 
     // Coord pt = generator.utility.randomFloor(myCharArray2D); would give a better starting place
     private int playerX=4;
