@@ -8,14 +8,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
  * I am using this tileset here: http://opengameart.org/content/rogue-dungeon
  */
 public class Assets {
-    TextureAtlas atlas;
-    TextureAtlas.AtlasRegion[] character = new TextureAtlas.AtlasRegion[32];
-    TextureAtlas.AtlasRegion[] environment = new TextureAtlas.AtlasRegion[78];
-    TextureAtlas.AtlasRegion[] item = new TextureAtlas.AtlasRegion[48];
+    public TextureAtlas atlas;
+    public TextureAtlas.AtlasRegion[] character = new TextureAtlas.AtlasRegion[32];
+    public TextureAtlas.AtlasRegion[] environment = new TextureAtlas.AtlasRegion[78];
+    public TextureAtlas.AtlasRegion[] item = new TextureAtlas.AtlasRegion[48];
 
-    TextureAtlas.AtlasRegion wall;
-    TextureAtlas.AtlasRegion floor;
-    TextureAtlas.AtlasRegion player;
+    public TextureAtlas.AtlasRegion wall;
+    public TextureAtlas.AtlasRegion floor;
+    public TextureAtlas.AtlasRegion player;
 
     public Assets () {
         atlas = new TextureAtlas(Gdx.files.internal("roguedungeon/pack.atlas"));
@@ -39,5 +39,9 @@ public class Assets {
         wall = environment[1];
         floor = environment[2];
         player = character[0];
+    }
+
+    public void dispose() {
+        atlas.dispose();
     }
 }
