@@ -1,6 +1,8 @@
 The version of Tiny (the font) included here was converted by TEttinger to work in libGDX.
 
-Tiny was originally created by Matthew Welch. His comments on the font are below:
+Tiny was originally created by Matthew Welch.
+Original URL: http://www.squaregear.net/fonts/tiny.shtml
+His comments on the font are below:
 
 Font: Tiny
 Created By: Matthew Welch
