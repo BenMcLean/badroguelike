@@ -12,10 +12,23 @@ public class Assets {
     public TextureAtlas.AtlasRegion[] character = new TextureAtlas.AtlasRegion[32];
     public TextureAtlas.AtlasRegion[] environment = new TextureAtlas.AtlasRegion[78];
     public TextureAtlas.AtlasRegion[] item = new TextureAtlas.AtlasRegion[48];
+    public TextureAtlas.AtlasRegion[][] thing = {character, environment, item};
 
     public TextureAtlas.AtlasRegion wall;
     public TextureAtlas.AtlasRegion floor;
     public TextureAtlas.AtlasRegion player;
+    public TextureAtlas.AtlasRegion orc;
+
+    public static String description (int viewing, int index) {
+        return description(viewing) + "[" + index + "]";
+    }
+    public static String description (int viewing) {
+        switch (viewing) {
+            case 1: return "environment";
+            case 2: return "item";
+            default: return "character";
+        }
+    }
 
     public Assets () {
         atlas = new TextureAtlas(Gdx.files.internal("roguedungeon/pack.atlas"));
@@ -39,6 +52,7 @@ public class Assets {
         wall = environment[1];
         floor = environment[2];
         player = character[0];
+        orc = character[1];
     }
 
     public void dispose() {

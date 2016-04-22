@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -24,10 +25,13 @@ public class GraphicsViewer implements Screen, InputProcessor {
     public static final int VIRTUAL_WIDTH = 64;
     public static final int VIRTUAL_HEIGHT = 64;
     public Assets assets = new Assets();
-    private Color color = Color.BLACK;
+    private Color color = Color.DARK_GRAY;
     private Viewport gameView;
     private SpriteBatch batch;
     private BitmapFont font;
+    private int viewing=0;
+    private int index=0;
+    private TextureAtlas.AtlasRegion region;
 
     @Override
     public void show() {
@@ -51,8 +55,8 @@ public class GraphicsViewer implements Screen, InputProcessor {
         cam.update();
         batch.setProjectionMatrix(cam.combined); // Don't forget this else your viewport won't be used when rendering
         batch.begin();
-        draw(batch, assets.player, 0, 0);
-        font.draw(batch, "Hello World", -20, -20);
+        draw(batch, assets.thing[viewing][index], -4, -4);
+        font.draw(batch, assets.description(viewing, index), -28, -4);
         batch.end();
     }
 
@@ -162,12 +166,22 @@ public class GraphicsViewer implements Screen, InputProcessor {
             case Input.Keys.ESCAPE:
                 Gdx.app.exit();
             case Input.Keys.UP:
+                viewing--;
+                if (viewing < 0) viewing = assets.thing.length - 1;
+                if (index >= assets.thing[viewing].length) index = assets.thing[viewing].length - 1;
                 break;
             case Input.Keys.RIGHT:
+                index++;
+                if (index >= assets.thing[viewing].length) index=0;
                 break;
             case Input.Keys.DOWN:
+                viewing++;
+                if (viewing >= assets.thing.length) viewing=0;
+                if (index >= assets.thing[viewing].length) index = assets.thing[viewing].length - 1;
                 break;
             case Input.Keys.LEFT:
+                index--;
+                if (index < 0) index = assets.thing[viewing].length - 1;
                 break;
         }
     }
