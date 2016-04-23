@@ -2,11 +2,9 @@ package net.benmclean.badroguelike.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -32,6 +30,8 @@ public class GameScreen implements Screen, Disposable {
     private TiledMap map;
     private TiledMapRenderer tiledMapRenderer;
     private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_HEIGHT, VIRTUAL_WIDTH, true, true);
+    private Texture screenTexture;
+    private TextureRegion screenRegion = new TextureRegion();
     public GameWorld world = new GameWorld();
     public GameInputProcessor input = new GameInputProcessor(world);
 
@@ -83,7 +83,11 @@ public class GameScreen implements Screen, Disposable {
         screenView.getCamera().position.set(32, 32, 0);
         batch.setProjectionMatrix(screenView.getCamera().combined);
         batch.begin();
-        batch.draw(frameBuffer.getColorBufferTexture(), 0, 0);
+        screenTexture = frameBuffer.getColorBufferTexture();
+        screenTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        screenRegion.setRegion(screenTexture);
+        screenRegion.flip(false, true);
+        batch.draw(screenRegion, 0, 0);
         batch.end();
     }
 
