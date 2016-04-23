@@ -23,7 +23,8 @@ public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_WIDTH = 64;
     public static final int VIRTUAL_HEIGHT = 64;
     public Assets assets = new Assets();
-    private Color color = Color.BLACK;
+    private Color worldBackgroundColor = Color.DARK_GRAY;
+    private Color screenBackgroundColor = Color.BLACK;
     private Viewport worldView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     private Viewport screenView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     private SpriteBatch batch;
@@ -63,7 +64,7 @@ public class GameScreen implements Screen, Disposable {
     @Override
     public void render(float delta) {
         frameBuffer.begin();
-        Gdx.gl.glClearColor(color.r, color.g, color.b, 1);
+        Gdx.gl.glClearColor(worldBackgroundColor.r, worldBackgroundColor.g, worldBackgroundColor.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         worldView.apply();
         worldView.getCamera().position.set(world.getPlayerX() * 8 + 4, world.getPlayerY() * 8 + 4, 0);
@@ -76,7 +77,7 @@ public class GameScreen implements Screen, Disposable {
         batch.end();
         frameBuffer.end();
 
-        Gdx.gl.glClearColor(color.r, color.g, color.b, 1);
+        Gdx.gl.glClearColor(screenBackgroundColor.r, screenBackgroundColor.g, screenBackgroundColor.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         screenView.apply();
