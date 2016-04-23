@@ -5,9 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -18,7 +18,6 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import net.benmclean.GDXPixelShapeRenderer.GDXPixelShapeRenderer;
 import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
 
@@ -27,12 +26,12 @@ public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_HEIGHT = 64;
     public Assets assets = new Assets();
     private Color color = Color.BLACK;
-    private Viewport gameView;
+    private Viewport worldView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+    private Viewport screenView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     private SpriteBatch batch;
     private TiledMap map;
-    private TiledMapRenderer renderer;
-    private ShapeRenderer shapeRenderer;
-    private GDXPixelShapeRenderer pixelShapeRenderer = new GDXPixelShapeRenderer();
+    private TiledMapRenderer tiledMapRenderer;
+    private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_HEIGHT, VIRTUAL_WIDTH, true, true);
     public GameWorld world = new GameWorld();
     public GameInputProcessor input = new GameInputProcessor(world);
 
@@ -40,9 +39,7 @@ public class GameScreen implements Screen, Disposable {
 
     @Override
     public void show() {
-        gameView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT); // This is the internal resolution your game will display regardless of window size
         batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
 
         map = new TiledMap();
         MapLayers layers = map.getLayers();
@@ -59,47 +56,47 @@ public class GameScreen implements Screen, Disposable {
             }
         }
         layers.add(layer);
-        renderer = new OrthogonalTiledMapRenderer(map);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
         Gdx.input.setInputProcessor(input);
     }
 
     @Override
     public void render(float delta) {
+        frameBuffer.begin();
         Gdx.gl.glClearColor(color.r, color.g, color.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        gameView.apply(); // we set this as the current viewport (we could have more viewports, for example a hudView)
-        OrthographicCamera cam = (OrthographicCamera) gameView.getCamera();
-        cam.position.set(world.getPlayerX() * 8 + 4, world.getPlayerY() * 8 + 4, 0);
-        cam.update();
-        renderer.setView(cam);
-        renderer.render();
-        batch.setProjectionMatrix(cam.combined); // Don't forget this else your viewport won't be used when rendering
+        worldView.apply();
+        worldView.getCamera().position.set(world.getPlayerX() * 8 + 4, world.getPlayerY() * 8 + 4, 0);
+        worldView.getCamera().update();
+        tiledMapRenderer.setView((OrthographicCamera) worldView.getCamera());
+        tiledMapRenderer.render();
+        batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
         batch.draw(assets.player, world.getPlayerX() * 8, world.getPlayerY() * 8);
         batch.end();
-        shapeRenderer.setProjectionMatrix(cam.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.PINK);
-        pixelShapeRenderer.setShapeRenderer(shapeRenderer);
-        pixelShapeRenderer.point(world.getPlayerX() * 8, world.getPlayerY() * 8);
+        frameBuffer.end();
 
-        shapeRenderer.end();
-    }
+        Gdx.gl.glClearColor(color.r, color.g, color.b, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    private void draw(SpriteBatch batch, TextureRegion region, float x, float y) {
-        batch.draw(region, Math.round(x), Math.round(y));
+        screenView.apply();
+        screenView.getCamera().position.set(0, 0, 0);
+        screenView.getCamera().update();
+        batch.setProjectionMatrix(screenView.getCamera().combined);
+        batch.begin();
+        batch.draw(frameBuffer.getColorBufferTexture(), 0, 0);
+        batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        gameView.update(width, height); // also don't forget this
+        screenView.update(width, height); // also don't forget this
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        shapeRenderer.dispose();
+        frameBuffer.dispose();
         assets.dispose();
     }
     @Override
