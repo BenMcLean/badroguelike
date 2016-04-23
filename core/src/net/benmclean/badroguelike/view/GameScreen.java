@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -28,6 +29,7 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;
     private TiledMap map;
     private TiledMapRenderer renderer;
+    private ShapeRenderer shapeRenderer;
     public GameWorld world = new GameWorld();
     public GameInputProcessor input = new GameInputProcessor(world);
 
@@ -37,6 +39,7 @@ public class GameScreen implements Screen {
     public void show() {
         gameView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT); // This is the internal resolution your game will display regardless of window size
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
         map = new TiledMap();
         MapLayers layers = map.getLayers();
@@ -72,6 +75,14 @@ public class GameScreen implements Screen {
         batch.begin();
         batch.draw(assets.player, world.getPlayerX() * 8, world.getPlayerY() * 8);
         batch.end();
+        shapeRenderer.setProjectionMatrix(cam.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        //if (world.playerHP != world.playerMaxHP) {
+            //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.PINK);
+            shapeRenderer.rect(world.getPlayerX() * 8, world.getPlayerY() * 8, 3, 3);
+        //}
+        shapeRenderer.end();
     }
 
     private void draw(SpriteBatch batch, TextureRegion region, float x, float y) {

@@ -15,6 +15,9 @@ public class GameWorld {
     // Coord pt = generator.utility.randomFloor(myCharArray2D); would give a better starting place
     private int playerX=4;
     private int playerY=4;
+    public int playerHP=50;
+    public int playerMaxHP=100;
+
     public int getPlayerX(){return playerX;}
     public int getPlayerY(){return playerY;}
     public int setPlayerX(int x){playerX=x; return getPlayerX();}
