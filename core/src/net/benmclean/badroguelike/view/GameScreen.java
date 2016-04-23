@@ -67,7 +67,7 @@ public class GameScreen implements Screen, Disposable {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         worldView.apply();
         worldView.getCamera().position.set(world.getPlayerX() * 8 + 4, world.getPlayerY() * 8 + 4, 0);
-        worldView.getCamera().update();
+        worldView.update(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
         tiledMapRenderer.setView((OrthographicCamera) worldView.getCamera());
         tiledMapRenderer.render();
         batch.setProjectionMatrix(worldView.getCamera().combined);
@@ -80,8 +80,7 @@ public class GameScreen implements Screen, Disposable {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         screenView.apply();
-        screenView.getCamera().position.set(0, 0, 0);
-        screenView.getCamera().update();
+        screenView.getCamera().position.set(32, 32, 0);
         batch.setProjectionMatrix(screenView.getCamera().combined);
         batch.begin();
         batch.draw(frameBuffer.getColorBufferTexture(), 0, 0);
@@ -90,7 +89,7 @@ public class GameScreen implements Screen, Disposable {
 
     @Override
     public void resize(int width, int height) {
-        screenView.update(width, height); // also don't forget this
+        screenView.update(width, height);
     }
 
     @Override
