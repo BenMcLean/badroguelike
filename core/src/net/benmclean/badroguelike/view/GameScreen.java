@@ -15,12 +15,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import net.benmclean.GDXPixelShapeRenderer.GDXPixelShapeRenderer;
 import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_WIDTH = 64;
     public static final int VIRTUAL_HEIGHT = 64;
     public Assets assets = new Assets();
@@ -30,6 +32,7 @@ public class GameScreen implements Screen {
     private TiledMap map;
     private TiledMapRenderer renderer;
     private ShapeRenderer shapeRenderer;
+    private GDXPixelShapeRenderer pixelShapeRenderer = new GDXPixelShapeRenderer();
     public GameWorld world = new GameWorld();
     public GameInputProcessor input = new GameInputProcessor(world);
 
@@ -76,12 +79,11 @@ public class GameScreen implements Screen {
         batch.draw(assets.player, world.getPlayerX() * 8, world.getPlayerY() * 8);
         batch.end();
         shapeRenderer.setProjectionMatrix(cam.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        //if (world.playerHP != world.playerMaxHP) {
-            //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.PINK);
-            shapeRenderer.rect(world.getPlayerX() * 8, world.getPlayerY() * 8, 3, 3);
-        //}
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.PINK);
+        pixelShapeRenderer.setShapeRenderer(shapeRenderer);
+        pixelShapeRenderer.point(world.getPlayerX() * 8, world.getPlayerY() * 8);
+
         shapeRenderer.end();
     }
 
@@ -97,6 +99,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
+        shapeRenderer.dispose();
         assets.dispose();
     }
     @Override

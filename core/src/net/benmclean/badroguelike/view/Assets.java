@@ -2,12 +2,13 @@ package net.benmclean.badroguelike.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by Benjamin on 4/4/2016.
  * I am using this tileset here: http://opengameart.org/content/rogue-dungeon
  */
-public class Assets {
+public class Assets implements Disposable {
     public TextureAtlas atlas;
     public TextureAtlas.AtlasRegion[] character = new TextureAtlas.AtlasRegion[32];
     public TextureAtlas.AtlasRegion[] environment = new TextureAtlas.AtlasRegion[78];
