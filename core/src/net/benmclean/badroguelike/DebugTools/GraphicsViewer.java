@@ -6,10 +6,12 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.benmclean.badroguelike.view.Assets;
@@ -24,10 +26,15 @@ public class GraphicsViewer implements Screen, InputProcessor {
     public static final int VIRTUAL_WIDTH = 64;
     public static final int VIRTUAL_HEIGHT = 64;
     public Assets assets = new Assets();
-    private Color color = Color.DARK_GRAY;
-    private Viewport gameView;
-    private SpriteBatch batch;
-    private BitmapFont font;
+    private Color worldBackgroundColor = Color.DARK_GRAY;
+    private Color screenBackgroundColor = Color.BLACK;
+    private Viewport worldView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+    private Viewport screenView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+    private SpriteBatch batch =  new SpriteBatch();
+    private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_HEIGHT, VIRTUAL_WIDTH, true, true);
+    private Texture screenTexture;
+    private TextureRegion screenRegion = new TextureRegion();
+    private BitmapFont font = new BitmapFont(Gdx.files.internal("tiny/tiny.fnt"));
     private int viewing=0;
     private int index=0;
 
@@ -35,26 +42,38 @@ public class GraphicsViewer implements Screen, InputProcessor {
     public void show() {
         for (int i=0; i<TRACKED_KEYS_ARRAY.size(); i++)
             keyPressed[i] = false;
-        gameView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT); // This is the internal resolution your game will display regardless of window size
-        batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("tiny/tiny.fnt"));
         font.setColor(Color.WHITE);
+        screenView.getCamera().position.set(32, 32, 0);
+        screenView.update(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
         Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(color.r, color.g, color.b, 1);
+        frameBuffer.begin();
+        Gdx.gl.glClearColor(worldBackgroundColor.r, worldBackgroundColor.g, worldBackgroundColor.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        gameView.apply(); // we set this as the current viewport (we could have more viewports, for example a hudView)
-        OrthographicCamera cam = (OrthographicCamera) gameView.getCamera();
-        cam.position.set(0, 0, 0);
-        cam.update();
-        batch.setProjectionMatrix(cam.combined); // Don't forget this else your viewport won't be used when rendering
+        worldView.apply();
+        worldView.getCamera().position.set(0, 0, 0);
+        worldView.update(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+        batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
         draw(batch, assets.thing[viewing][index], -4, -4);
         font.draw(batch, assets.description(viewing, index), -28, -4);
+        batch.end();
+        frameBuffer.end();
+
+        Gdx.gl.glClearColor(screenBackgroundColor.r, screenBackgroundColor.g, screenBackgroundColor.b, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        screenView.apply();
+        batch.setProjectionMatrix(screenView.getCamera().combined);
+        batch.begin();
+        screenTexture = frameBuffer.getColorBufferTexture();
+        screenTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        screenRegion.setRegion(screenTexture);
+        screenRegion.flip(false, true);
+        batch.draw(screenRegion, 0, 0);
         batch.end();
     }
 
@@ -64,7 +83,7 @@ public class GraphicsViewer implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        gameView.update(width, height); // also don't forget this
+        screenView.update(width, height); // also don't forget this
     }
 
     @Override
