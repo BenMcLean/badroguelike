@@ -35,13 +35,18 @@ public class GameScreen implements Screen, Disposable {
     private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_HEIGHT, VIRTUAL_WIDTH, true, true);
     private Texture screenTexture;
     private TextureRegion screenRegion = new TextureRegion();
+    private Texture one;
     public GameWorld world = new GameWorld();
     public GameInputProcessor input = new GameInputProcessor(world);
-
     public static TiledMapTileLayer.Cell makeCell (TiledMapTile tile) {TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell(); cell.setTile(tile); return cell;}
 
     @Override
     public void show() {
+        Pixmap pixmap1 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap1.drawPixel(0, 0, -1);
+        one = new Texture(pixmap1);
+        pixmap1.dispose();
+
         MapLayers layers = map.getLayers();
         TiledMapTileLayer layer = new TiledMapTileLayer(world.SIZE_X, world.SIZE_Y, TILE_HEIGHT, TILE_WIDTH);
         for (int x = 0; x < world.SIZE_X; x++) {
@@ -75,6 +80,7 @@ public class GameScreen implements Screen, Disposable {
         batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
         batch.draw(assets.player, world.getPlayerX() * TILE_HEIGHT, world.getPlayerY() * TILE_WIDTH);
+        drawHealthBar(batch, world.getPlayerX(), world.getPlayerY(), 0.5f);
         batch.end();
         frameBuffer.end();
 
@@ -92,6 +98,17 @@ public class GameScreen implements Screen, Disposable {
         batch.end();
     }
 
+    public void drawHealthBar (SpriteBatch batch, int x, int y, float health) {
+        batch.setColor(Color.BLACK);
+        batch.draw(one, x * TILE_WIDTH, (y+1) * TILE_HEIGHT + 1, TILE_WIDTH, 1);
+        batch.draw(one, x * TILE_WIDTH, (y+1) * TILE_HEIGHT, 1, 1);
+        batch.draw(one, x * TILE_WIDTH + 7, (y+1) * TILE_HEIGHT, 1, 1);
+        batch.draw(one, x * TILE_WIDTH, (y+1) * TILE_HEIGHT - 1, TILE_WIDTH, 1);
+        batch.setColor(Color.RED);
+        batch.draw(one, x * TILE_WIDTH + 1, (y+1) * TILE_HEIGHT, 6 * health, 1);
+        batch.setColor(Color.WHITE);
+    }
+
     @Override
     public void resize(int width, int height) {
         screenView.update(width, height);
@@ -102,6 +119,7 @@ public class GameScreen implements Screen, Disposable {
         batch.dispose();
         frameBuffer.dispose();
         assets.dispose();
+        one.dispose();
     }
     @Override
     public void hide() {}
