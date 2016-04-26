@@ -2,6 +2,8 @@ package net.benmclean.badroguelike.model;
 
 import squidpony.squidgrid.mapping.ClassicRogueMapGenerator;
 import squidpony.squidgrid.mapping.DungeonGenerator;
+import squidpony.squidgrid.mapping.DungeonUtility;
+import squidpony.squidmath.Coord;
 
 public class GameWorld {
 
@@ -9,12 +11,13 @@ public class GameWorld {
     public static final int SIZE_Y = 64;
 
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
+    private DungeonUtility dungeonUtil = new DungeonUtility();
     private char[][] bareDungeon, lineDungeon;
     private ClassicRogueMapGenerator rogueGen;
 
     // Coord pt = generator.utility.randomFloor(myCharArray2D); would give a better starting place
-    private int playerX=4;
-    private int playerY=4;
+    private int playerX;
+    private int playerY;
     public int playerHP=50;
     public int playerMaxHP=100;
 
@@ -37,6 +40,9 @@ public class GameWorld {
 
     public GameWorld () {
         bareDungeon = dungeonGen.generate();
+        Coord start = dungeonUtil.randomFloor(bareDungeon);
+        setPlayerX(start.getX());
+        setPlayerY(start.getY());
     }
 
     public Boolean isWall (int x, int y) {
