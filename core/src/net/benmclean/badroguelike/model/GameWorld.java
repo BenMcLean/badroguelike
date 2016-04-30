@@ -1,9 +1,9 @@
 package net.benmclean.badroguelike.model;
 
-import squidpony.squidgrid.mapping.ClassicRogueMapGenerator;
 import squidpony.squidgrid.mapping.DungeonGenerator;
 import squidpony.squidgrid.mapping.DungeonUtility;
 import squidpony.squidmath.Coord;
+import java.util.UUID;
 
 public class GameWorld {
 
@@ -13,18 +13,17 @@ public class GameWorld {
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private DungeonUtility dungeonUtil = new DungeonUtility();
     private char[][] bareDungeon, lineDungeon;
-    private ClassicRogueMapGenerator rogueGen;
-
-    // Coord pt = generator.utility.randomFloor(myCharArray2D); would give a better starting place
-    private int playerX;
-    private int playerY;
+    private LazySpatialMap<Mob> mobs = new LazySpatialMap<Mob>();
     public int playerHP=50;
     public int playerMaxHP=100;
+    protected UUID playerUUID;
 
-    public int getPlayerX(){return playerX;}
-    public int getPlayerY(){return playerY;}
-    public int setPlayerX(int x){playerX=x; return getPlayerX();}
-    public int setPlayerY(int y){playerY=y; return getPlayerY();}
+    public int getPlayerX() {return mobs.getPosition(playerUUID).getX();}
+    public int getPlayerY() {return mobs.getPosition(playerUUID).getY();}
+    public void setPlayerX(int x) {setPlayer(x, getPlayerY());}
+    public void setPlayerY(int y) {setPlayer(getPlayerX(), y);}
+    public void setPlayer(int x, int y) {mobs.move(playerUUID, Coord.get(x, y));}
+
     public Boolean movePlayer(Direction direction) {
         return movePlayer(direction.dx(), direction.dy());
     }
@@ -40,9 +39,10 @@ public class GameWorld {
 
     public GameWorld () {
         bareDungeon = dungeonGen.generate();
-        Coord start = dungeonUtil.randomFloor(bareDungeon);
-        setPlayerX(start.getX());
-        setPlayerY(start.getY());
+        playerUUID = mobs.put(
+                dungeonUtil.randomFloor(bareDungeon),
+                new Mob(Mob.Kind.HUMAN, true)
+                );
     }
 
     public Boolean isWall (int x, int y) {

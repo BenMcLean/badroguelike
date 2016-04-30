@@ -100,7 +100,6 @@ public class GameScreen implements Screen, Disposable {
     }
 
     public void drawHealthBar (SpriteBatch batch, int x, int y, float health) {
-//        drawRect(batch, x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
         batch.setColor(Color.BLACK);
         drawRect(batch, x * TILE_WIDTH, (y+1) * TILE_HEIGHT - 1, TILE_WIDTH, 3);
         batch.setColor(Color.RED);
@@ -109,15 +108,10 @@ public class GameScreen implements Screen, Disposable {
     }
 
     public void drawRect(SpriteBatch batch, int x, int y, int width, int height) {
-//        batch.setColor(Color.BLUE);
         batch.draw(one, x + width - 1, y + 1, 1, height - 1);
-//        batch.setColor(Color.GREEN);
         batch.draw(one, x + 1, y, width - 1, 1);
-//        batch.setColor(Color.YELLOW);
         batch.draw(one, x, y, 1, height - 1);
-//        batch.setColor(Color.RED);
         batch.draw(one, x , y + height - 1, width - 1, 1);
-//        batch.setColor(Color.WHITE);
     }
 
     @Override
