@@ -18,6 +18,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
+import net.benmclean.badroguelike.model.LazySpatialMap;
+import net.benmclean.badroguelike.model.Mob;
+
+import java.util.Iterator;
+import java.util.UUID;
 
 public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_WIDTH = 64;
@@ -80,8 +85,28 @@ public class GameScreen implements Screen, Disposable {
         tiledMapRenderer.render();
         batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
-        batch.draw(assets.player, world.getPlayerX() * TILE_HEIGHT, world.getPlayerY() * TILE_WIDTH);
-        drawHealthBar(batch, world.getPlayerX(), world.getPlayerY(), 0.5f);
+
+        //batch.draw(assets.player, world.getPlayerX() * TILE_HEIGHT, world.getPlayerY() * TILE_WIDTH);
+
+        Iterator<LazySpatialMap.SpatialTriple<UUID, Mob>> mobs = world.mobs.tripleIterator();
+        while (mobs.hasNext()) {
+            LazySpatialMap.SpatialTriple<UUID, Mob> mob = mobs.next();
+            batch.draw(
+                    mob.element.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
+                    mob.position.getX() * TILE_WIDTH,
+                    mob.position.getY() * TILE_HEIGHT
+            );
+            if (mob.element.getHP() < mob.element.getMaxHP()) {
+                drawHealthBar(
+                        batch,
+                        mob.position.getX(),
+                        mob.position.getY(),
+                        (float) mob.element.getHP() / (float) mob.element.getMaxHP()
+                        );
+            }
+        }
+
+        //drawHealthBar(batch, world.getPlayerX(), world.getPlayerY(), 0.5f);
         batch.end();
         frameBuffer.end();
 

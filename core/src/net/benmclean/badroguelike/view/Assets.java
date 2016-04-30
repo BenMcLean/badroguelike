@@ -17,7 +17,7 @@ public class Assets implements Disposable {
 
     public TextureAtlas.AtlasRegion wall;
     public TextureAtlas.AtlasRegion floor;
-    public TextureAtlas.AtlasRegion player;
+    public TextureAtlas.AtlasRegion human;
     public TextureAtlas.AtlasRegion orc;
 
     public static String description (int viewing, int index) {
@@ -52,7 +52,7 @@ public class Assets implements Disposable {
 
         wall = environment[1];
         floor = environment[2];
-        player = character[0];
+        human = character[0];
         orc = character[1];
     }
 
