@@ -3,13 +3,13 @@ package net.benmclean.badroguelike.model;
 import squidpony.squidgrid.mapping.DungeonGenerator;
 import squidpony.squidgrid.mapping.DungeonUtility;
 import squidpony.squidmath.Coord;
-
-import java.util.UUID;
+import squidpony.squidmath.SquidID;
 
 public class GameWorld {
 
     public static final int SIZE_X = 64;
     public static final int SIZE_Y = 64;
+    public boolean[][] known = new boolean[SIZE_X][SIZE_Y];
 
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private DungeonUtility dungeonUtil = new DungeonUtility();
@@ -17,14 +17,14 @@ public class GameWorld {
     public LazySpatialMap<Mob> mobs = new LazySpatialMap<Mob>();
     public int playerHP = 50;
     public int playerMaxHP = 100;
-    protected UUID playerUUID;
+    protected SquidID playerSquidID;
 
     public int getPlayerX() {
-        return mobs.getPosition(playerUUID).getX();
+        return mobs.getPosition(playerSquidID).getX();
     }
 
     public int getPlayerY() {
-        return mobs.getPosition(playerUUID).getY();
+        return mobs.getPosition(playerSquidID).getY();
     }
 
     public void setPlayerX(int x) {
@@ -36,7 +36,7 @@ public class GameWorld {
     }
 
     public void setPlayer(int x, int y) {
-        mobs.move(playerUUID, Coord.get(x, y));
+        mobs.move(playerSquidID, Coord.get(x, y));
     }
 
     public Boolean movePlayer(Direction direction) {
@@ -54,8 +54,10 @@ public class GameWorld {
     }
 
     public GameWorld() {
+        for (boolean i[] : known) java.util.Arrays.fill(i, true);
+
         bareDungeon = dungeonGen.generate();
-        playerUUID = mobs.put(
+        playerSquidID = mobs.put(
                 dungeonUtil.randomFloor(bareDungeon),
                 new Mob(Mob.Kind.HUMAN, 100, 100, true)
         );

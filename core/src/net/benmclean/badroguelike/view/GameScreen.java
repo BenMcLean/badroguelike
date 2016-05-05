@@ -20,9 +20,9 @@ import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
 import net.benmclean.badroguelike.model.LazySpatialMap;
 import net.benmclean.badroguelike.model.Mob;
+import squidpony.squidmath.SquidID;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_WIDTH = 64;
@@ -88,9 +88,9 @@ public class GameScreen implements Screen, Disposable {
 
         //batch.draw(assets.player, world.getPlayerX() * TILE_HEIGHT, world.getPlayerY() * TILE_WIDTH);
 
-        Iterator<LazySpatialMap.SpatialTriple<UUID, Mob>> mobs = world.mobs.tripleIterator();
+        Iterator<LazySpatialMap.SpatialTriple<SquidID, Mob>> mobs = world.mobs.tripleIterator();
         while (mobs.hasNext()) {
-            LazySpatialMap.SpatialTriple<UUID, Mob> mob = mobs.next();
+            LazySpatialMap.SpatialTriple<SquidID, Mob> mob = mobs.next();
             batch.draw(
                     mob.element.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
                     mob.position.getX() * TILE_WIDTH,
