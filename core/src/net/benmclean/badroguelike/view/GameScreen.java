@@ -92,7 +92,6 @@ public class GameScreen implements Screen, Disposable {
 
         OrthogonalTiledMapIterator iter = new OrthogonalTiledMapIterator(
                 (OrthographicCamera) worldView.getCamera(),
-                (float) TILE_HEIGHT,
                 (TiledMapTileLayer) map.getLayers().get(0)
         );
 

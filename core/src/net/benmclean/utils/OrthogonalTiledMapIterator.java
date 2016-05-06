@@ -14,7 +14,11 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
     protected float unitScale;
     protected int col1, col2, row1, row2, row, col;
 
-    public OrthogonalTiledMapIterator(OrthographicCamera camera, float unitScale, TiledMapTileLayer layer) {
+    public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer) {
+        this(camera, layer, 1.0f);
+    }
+
+    public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer, float unitScale) {
         this.unitScale = unitScale;
         float width = camera.viewportWidth * camera.zoom;
         float height = camera.viewportHeight * camera.zoom;
