@@ -39,9 +39,15 @@ public class GameScreen implements Screen, Disposable {
     private Texture screenTexture;
     private TextureRegion screenRegion = new TextureRegion();
     private Texture one;
+    private OrthogonalTiledMapIterator visibleIterator;
     public GameWorld world = new GameWorld();
     public GameInputProcessor input = new GameInputProcessor(world);
-    public static TiledMapTileLayer.Cell makeCell (TiledMapTile tile) {TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell(); cell.setTile(tile); return cell;}
+
+    public static TiledMapTileLayer.Cell makeCell(TiledMapTile tile) {
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        cell.setTile(tile);
+        return cell;
+    }
 
     @Override
     public void show() {
@@ -55,7 +61,7 @@ public class GameScreen implements Screen, Disposable {
         TiledMapTileLayer layer = new TiledMapTileLayer(world.SIZE_X, world.SIZE_Y, TILE_HEIGHT, TILE_WIDTH);
         for (int x = 0; x < world.SIZE_X; x++) {
             for (int y = 0; y < world.SIZE_Y; y++) {
-                StaticTiledMapTile tile=null;
+                StaticTiledMapTile tile = null;
                 Boolean answer = world.isWall(x, y);
                 if (answer != null && !answer)
                     tile = new StaticTiledMapTile(assets.floor);
@@ -69,6 +75,11 @@ public class GameScreen implements Screen, Disposable {
         screenView.getCamera().position.set(32, 32, 0);
         screenView.update(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
         Gdx.input.setInputProcessor(input);
+
+        visibleIterator = new OrthogonalTiledMapIterator(
+                (OrthographicCamera) worldView.getCamera(),
+                (TiledMapTileLayer) map.getLayers().get(0)
+        );
     }
 
     @Override
@@ -84,29 +95,28 @@ public class GameScreen implements Screen, Disposable {
         batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
 
-        OrthogonalTiledMapIterator iter = new OrthogonalTiledMapIterator(
-                (OrthographicCamera) worldView.getCamera(),
-                (TiledMapTileLayer) map.getLayers().get(0)
-        );
-
-        while (iter.hasNext()) {
-            Coord here = iter.next();
+        visibleIterator.reset();
+        while (visibleIterator.hasNext()) {
+            Coord here = visibleIterator.next();
             Mob mob = world.mobs.get(here);
-            if (mob != null) {
+            if (mob != null)
                 batch.draw(
                         mob.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
                         here.getX() * TILE_WIDTH,
                         here.getY() * TILE_HEIGHT
                 );
-                if (mob.getHP() < mob.getMaxHP()) {
-                    drawHealthBar(
-                            batch,
-                            here.getX(),
-                            here.getY(),
-                            (float) mob.getHP() / (float) mob.getMaxHP()
-                    );
-                }
-            }
+        }
+        visibleIterator.reset();
+        while (visibleIterator.hasNext()) {
+            Coord here = visibleIterator.next();
+            Mob mob = world.mobs.get(here);
+            if (mob != null && mob.getHP() < mob.getMaxHP())
+                drawHealthBar(
+                        batch,
+                        here.getX(),
+                        here.getY(),
+                        (float) mob.getHP() / (float) mob.getMaxHP()
+                );
         }
 
         batch.end();
@@ -126,11 +136,11 @@ public class GameScreen implements Screen, Disposable {
         batch.end();
     }
 
-    public void drawHealthBar (SpriteBatch batch, int x, int y, float health) {
+    public void drawHealthBar(SpriteBatch batch, int x, int y, float health) {
         batch.setColor(Color.BLACK);
-        drawRect(batch, x * TILE_WIDTH, (y+1) * TILE_HEIGHT - 1, TILE_WIDTH, 3);
+        drawRect(batch, x * TILE_WIDTH, (y + 1) * TILE_HEIGHT - 1, TILE_WIDTH, 3);
         batch.setColor(Color.RED);
-        batch.draw(one, x * TILE_WIDTH + 1, (y+1) * TILE_HEIGHT, 6 * health, 1);
+        batch.draw(one, x * TILE_WIDTH + 1, (y + 1) * TILE_HEIGHT, 6 * health, 1);
         batch.setColor(Color.WHITE);
     }
 
@@ -138,7 +148,7 @@ public class GameScreen implements Screen, Disposable {
         batch.draw(one, x + width - 1, y + 1, 1, height - 1);
         batch.draw(one, x + 1, y, width - 1, 1);
         batch.draw(one, x, y, 1, height - 1);
-        batch.draw(one, x , y + height - 1, width - 1, 1);
+        batch.draw(one, x, y + height - 1, width - 1, 1);
     }
 
     @Override
@@ -153,16 +163,22 @@ public class GameScreen implements Screen, Disposable {
         assets.dispose();
         one.dispose();
     }
+
     @Override
-    public void hide() {}
+    public void hide() {
+    }
+
     @Override
-    public void pause() {}
+    public void pause() {
+    }
+
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     public static void toggleFullscreen() {
         if (Gdx.graphics.isFullscreen())
-            Gdx.graphics.setWindowedMode(VIRTUAL_WIDTH*12, VIRTUAL_HEIGHT*12);
+            Gdx.graphics.setWindowedMode(VIRTUAL_WIDTH * 12, VIRTUAL_HEIGHT * 12);
         else
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
     }

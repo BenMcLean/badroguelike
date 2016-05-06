@@ -12,12 +12,22 @@ import java.util.Iterator;
  */
 public class OrthogonalTiledMapIterator implements Iterator<Coord> {
     protected int x1, x2, y1, y2, y, x;
+    protected OrthographicCamera camera;
+    protected TiledMapTileLayer layer;
+    protected float unitScale;
 
     public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer) {
         this(camera, layer, 1.0f);
     }
 
     public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer, float unitScale) {
+        this.camera = camera;
+        this.layer = layer;
+        this.unitScale = unitScale;
+        reset();
+    }
+
+    public void reset () {
         float width = camera.viewportWidth * camera.zoom;
         float height = camera.viewportHeight * camera.zoom;
         Rectangle viewBounds = new Rectangle().set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
