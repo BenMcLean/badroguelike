@@ -18,13 +18,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
-import net.benmclean.badroguelike.model.LazySpatialMap;
 import net.benmclean.badroguelike.model.Mob;
 import net.benmclean.utils.OrthogonalTiledMapIterator;
 import squidpony.squidmath.Coord;
-import squidpony.squidmath.SquidID;
-
-import java.util.Iterator;
 
 public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_WIDTH = 64;
@@ -88,8 +84,6 @@ public class GameScreen implements Screen, Disposable {
         batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
 
-        //batch.draw(assets.player, world.getPlayerX() * TILE_HEIGHT, world.getPlayerY() * TILE_WIDTH);
-
         OrthogonalTiledMapIterator iter = new OrthogonalTiledMapIterator(
                 (OrthographicCamera) worldView.getCamera(),
                 (TiledMapTileLayer) map.getLayers().get(0)
@@ -97,36 +91,24 @@ public class GameScreen implements Screen, Disposable {
 
         while (iter.hasNext()) {
             Coord here = iter.next();
-
-            //Gdx.app.log("LOLWUT", "Here = " + here.x + ", " + here.y);
-
-            drawHealthBar(
-                    batch,
-                    here.x,
-                    here.y,
-                    1f
-            );
-        }
-
-        Iterator<LazySpatialMap.SpatialTriple<SquidID, Mob>> mobs = world.mobs.tripleIterator();
-        while (mobs.hasNext()) {
-            LazySpatialMap.SpatialTriple<SquidID, Mob> mob = mobs.next();
-            batch.draw(
-                    mob.element.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
-                    mob.position.getX() * TILE_WIDTH,
-                    mob.position.getY() * TILE_HEIGHT
-            );
-            if (mob.element.getHP() < mob.element.getMaxHP()) {
-                drawHealthBar(
-                        batch,
-                        mob.position.getX(),
-                        mob.position.getY(),
-                        (float) mob.element.getHP() / (float) mob.element.getMaxHP()
-                        );
+            Mob mob = world.mobs.get(here);
+            if (mob != null) {
+                batch.draw(
+                        mob.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
+                        here.getX() * TILE_WIDTH,
+                        here.getY() * TILE_HEIGHT
+                );
+                if (mob.getHP() < mob.getMaxHP()) {
+                    drawHealthBar(
+                            batch,
+                            here.getX(),
+                            here.getY(),
+                            (float) mob.getHP() / (float) mob.getMaxHP()
+                    );
+                }
             }
         }
 
-        //drawHealthBar(batch, world.getPlayerX(), world.getPlayerY(), 0.5f);
         batch.end();
         frameBuffer.end();
 

@@ -11,15 +11,13 @@ import java.util.Iterator;
  * Created by Benjamin on 5/5/2016.
  */
 public class OrthogonalTiledMapIterator implements Iterator<Coord> {
-    protected float unitScale;
-    protected int col1, col2, row1, row2, row, col;
+    protected int x1, x2, y1, y2, y, x;
 
     public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer) {
         this(camera, layer, 1.0f);
     }
 
     public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer, float unitScale) {
-        this.unitScale = unitScale;
         float width = camera.viewportWidth * camera.zoom;
         float height = camera.viewportHeight * camera.zoom;
         Rectangle viewBounds = new Rectangle().set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
@@ -30,36 +28,29 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
         final float layerTileWidth = layer.getTileWidth() * unitScale;
         final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-        col1 = Math.max(0, (int) (viewBounds.x / layerTileWidth));
-        col2 = Math.min(layerWidth, (int) ((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
+        x1 = Math.max(0, (int) (viewBounds.x / layerTileWidth));
+        x2 = Math.min(layerWidth, (int) ((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
 
-        row1 = Math.max(0, (int) (viewBounds.y / layerTileHeight));
-        row2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
+        y1 = Math.max(0, (int) (viewBounds.y / layerTileHeight));
+        y2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
 
-        row = row2;
-        col = col1;
-
-//        for (int row = row2; row >= row1; row--) {
-//            for (int col = col1; col < col2; col++) {
-//            }
-//        }
+        y = y2-1;
+        x = x1-1;
     }
 
     @Override
     public boolean hasNext() {
-        return row >= row1;
+        return !(y == y1 && x+1 >= x2);
     }
 
     @Override
     public Coord next() {
-
-        //Gdx.app.log("OrthogonalTileMapIterator", "row, col = " + row + ", " + col);
-        col++;
-        if (!(col < col2)) {
-            row--;
-            col=col1;
+        x++;
+        if (x >= x2) {
+            y--;
+            x=x1;
         }
-        return Coord.get(row, col);
+        return Coord.get(x, y);
     }
 
     @Override
