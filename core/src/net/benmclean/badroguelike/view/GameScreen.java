@@ -20,6 +20,7 @@ import net.benmclean.badroguelike.controller.GameInputProcessor;
 import net.benmclean.badroguelike.model.GameWorld;
 import net.benmclean.badroguelike.model.LazySpatialMap;
 import net.benmclean.badroguelike.model.Mob;
+import net.benmclean.utils.OrthogonalTiledMapIterator;
 import squidpony.squidmath.SquidID;
 
 import java.util.Iterator;
@@ -87,6 +88,12 @@ public class GameScreen implements Screen, Disposable {
         batch.begin();
 
         //batch.draw(assets.player, world.getPlayerX() * TILE_HEIGHT, world.getPlayerY() * TILE_WIDTH);
+
+        OrthogonalTiledMapIterator iter = new OrthogonalTiledMapIterator(
+                (OrthographicCamera) worldView.getCamera(),
+                (float) TILE_HEIGHT,
+                (TiledMapTileLayer) map.getLayers().get(0)
+        );
 
         Iterator<LazySpatialMap.SpatialTriple<SquidID, Mob>> mobs = world.mobs.tripleIterator();
         while (mobs.hasNext()) {
