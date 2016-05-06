@@ -2,19 +2,19 @@ package net.benmclean.utils;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
+import squidpony.squidmath.Coord;
 
 import java.util.Iterator;
 
 /**
  * Created by Benjamin on 5/5/2016.
  */
-public class OrthogonalTiledMapIterator implements Iterator<GridPoint2> {
+public class OrthogonalTiledMapIterator implements Iterator<Coord> {
     protected float unitScale;
     protected int col1, col2, row1, row2, row, col;
 
-    public void setView(OrthographicCamera camera, float unitScale, TiledMapTileLayer layer) {
+    public OrthogonalTiledMapIterator(OrthographicCamera camera, float unitScale, TiledMapTileLayer layer) {
         this.unitScale = unitScale;
         float width = camera.viewportWidth * camera.zoom;
         float height = camera.viewportHeight * camera.zoom;
@@ -43,17 +43,19 @@ public class OrthogonalTiledMapIterator implements Iterator<GridPoint2> {
 
     @Override
     public boolean hasNext() {
-        return !(row >= row1) && !(col < col2);
+        return row >= row1;
     }
 
     @Override
-    public GridPoint2 next() {
+    public Coord next() {
+
+        //Gdx.app.log("OrthogonalTileMapIterator", "row, col = " + row + ", " + col);
         col++;
         if (!(col < col2)) {
             row--;
             col=col1;
         }
-        return new GridPoint2(row, col);
+        return Coord.get(row, col);
     }
 
     @Override

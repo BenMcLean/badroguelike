@@ -21,6 +21,7 @@ import net.benmclean.badroguelike.model.GameWorld;
 import net.benmclean.badroguelike.model.LazySpatialMap;
 import net.benmclean.badroguelike.model.Mob;
 import net.benmclean.utils.OrthogonalTiledMapIterator;
+import squidpony.squidmath.Coord;
 import squidpony.squidmath.SquidID;
 
 import java.util.Iterator;
@@ -94,6 +95,19 @@ public class GameScreen implements Screen, Disposable {
                 (float) TILE_HEIGHT,
                 (TiledMapTileLayer) map.getLayers().get(0)
         );
+
+        while (iter.hasNext()) {
+            Coord here = iter.next();
+
+            //Gdx.app.log("LOLWUT", "Here = " + here.x + ", " + here.y);
+
+            drawHealthBar(
+                    batch,
+                    here.x,
+                    here.y,
+                    1f
+            );
+        }
 
         Iterator<LazySpatialMap.SpatialTriple<SquidID, Mob>> mobs = world.mobs.tripleIterator();
         while (mobs.hasNext()) {
