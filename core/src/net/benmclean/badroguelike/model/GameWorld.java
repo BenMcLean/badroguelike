@@ -7,8 +7,8 @@ import squidpony.squidmath.SquidID;
 
 public class GameWorld {
 
-    public static final int SIZE_X = 16;
-    public static final int SIZE_Y = 16;
+    public static final int SIZE_X = 64;
+    public static final int SIZE_Y = 64;
     public boolean[][] known = new boolean[SIZE_X][SIZE_Y];
 
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
@@ -69,7 +69,7 @@ public class GameWorld {
         );
 
         // Add baddies
-        for (int x = 0; x < 1; x++)
+        for (int x = 0; x < 50; x++)
             mobs.put(
                     dungeonUtil.randomFloor(bareDungeon),
                     new Mob(Mob.Kind.ORC, 50, 100)
