@@ -98,9 +98,6 @@ public class GameScreen implements Screen, Disposable {
 
         while (iter.hasNext()) {
             here = iter.next();
-
-            Gdx.app.log("LOLWUT", "Here = " + here.x + ", " + here.y);
-
             drawHealthBar(
                     batch,
                     here.x,
@@ -108,6 +105,7 @@ public class GameScreen implements Screen, Disposable {
                     1f
             );
         }
+        Gdx.app.log("LOLWUT", "Here = " + here.x + ", " + here.y);
 
         Iterator<LazySpatialMap.SpatialTriple<SquidID, Mob>> mobs = world.mobs.tripleIterator();
         while (mobs.hasNext()) {
