@@ -36,8 +36,8 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
         row1 = Math.max(0, (int) (viewBounds.y / layerTileHeight));
         row2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
 
-        row = row2;
-        col = col1;
+        row = row2-1;
+        col = col1-1;
 
 //        for (int row = row2; row >= row1; row--) {
 //            for (int col = col1; col < col2; col++) {
@@ -47,7 +47,7 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
 
     @Override
     public boolean hasNext() {
-        return row >= row1;
+        return row >= row1 && !(row == row1 && col == col2);
     }
 
     @Override
@@ -55,11 +55,11 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
 
         //Gdx.app.log("OrthogonalTileMapIterator", "row, col = " + row + ", " + col);
         col++;
-        if (!(col < col2)) {
+        if (col >= col2) {
             row--;
             col=col1;
         }
-        return Coord.get(row, col);
+        return Coord.get(col, row);
     }
 
     @Override

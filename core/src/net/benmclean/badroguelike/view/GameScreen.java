@@ -94,11 +94,12 @@ public class GameScreen implements Screen, Disposable {
                 (OrthographicCamera) worldView.getCamera(),
                 (TiledMapTileLayer) map.getLayers().get(0)
         );
+        Coord here = Coord.get(0, 0);
 
         while (iter.hasNext()) {
-            Coord here = iter.next();
+            here = iter.next();
 
-            //Gdx.app.log("LOLWUT", "Here = " + here.x + ", " + here.y);
+            Gdx.app.log("LOLWUT", "Here = " + here.x + ", " + here.y);
 
             drawHealthBar(
                     batch,
