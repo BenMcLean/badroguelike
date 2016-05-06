@@ -74,12 +74,8 @@ public class GameScreen implements Screen, Disposable {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
         screenView.getCamera().position.set(32, 32, 0);
         screenView.update(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
+        visibleIterator = new OrthogonalTiledMapIterator((OrthographicCamera) worldView.getCamera(), layer);
         Gdx.input.setInputProcessor(input);
-
-        visibleIterator = new OrthogonalTiledMapIterator(
-                (OrthographicCamera) worldView.getCamera(),
-                (TiledMapTileLayer) map.getLayers().get(0)
-        );
     }
 
     @Override

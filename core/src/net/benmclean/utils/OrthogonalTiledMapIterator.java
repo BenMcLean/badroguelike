@@ -8,6 +8,7 @@ import squidpony.squidmath.Coord;
 import java.util.Iterator;
 
 /**
+ * Iterates over tiles in visible area using same logic as OrthogonalTiledMapRenderer from com.badlogic.gdx.maps.tiled.renderers.
  * Created by Benjamin on 5/5/2016.
  */
 public class OrthogonalTiledMapIterator implements Iterator<Coord> {
@@ -15,6 +16,7 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
     protected OrthographicCamera camera;
     protected TiledMapTileLayer layer;
     protected float unitScale;
+    protected Rectangle viewBounds = new Rectangle();
 
     public OrthogonalTiledMapIterator(OrthographicCamera camera, TiledMapTileLayer layer) {
         this(camera, layer, 1.0f);
@@ -27,10 +29,10 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
         reset();
     }
 
-    public void reset () {
+    public void reset() {
         float width = camera.viewportWidth * camera.zoom;
         float height = camera.viewportHeight * camera.zoom;
-        Rectangle viewBounds = new Rectangle().set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
+        viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
 
         final int layerWidth = layer.getWidth();
         final int layerHeight = layer.getHeight();
@@ -44,13 +46,13 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
         y1 = Math.max(0, (int) (viewBounds.y / layerTileHeight));
         y2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
 
-        y = y2-1;
-        x = x1-1;
+        y = y2 - 1;
+        x = x1 - 1;
     }
 
     @Override
     public boolean hasNext() {
-        return !(y == y1 && x+1 >= x2);
+        return !(y == y1 && x + 1 >= x2);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
         x++;
         if (x >= x2) {
             y--;
-            x=x1;
+            x = x1;
         }
         return Coord.get(x, y);
     }
