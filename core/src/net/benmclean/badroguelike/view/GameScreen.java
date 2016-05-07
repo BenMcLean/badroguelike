@@ -75,6 +75,8 @@ public class GameScreen implements Screen, Disposable {
         screenView.getCamera().position.set(32, 32, 0);
         screenView.update(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
         visibleIterator = new OrthogonalTiledMapIterator((OrthographicCamera) worldView.getCamera(), layer);
+
+        batch.enableBlending();
         Gdx.input.setInputProcessor(input);
     }
 
@@ -90,6 +92,8 @@ public class GameScreen implements Screen, Disposable {
         tiledMapRenderer.render();
         batch.setProjectionMatrix(worldView.getCamera().combined);
         batch.begin();
+
+        //Color shadow = new Color(0f, 0f, 0f, 0.5f);
 
         visibleIterator.reset();
         while (visibleIterator.hasNext()) {
@@ -133,10 +137,10 @@ public class GameScreen implements Screen, Disposable {
     }
 
     public void drawHealthBar(SpriteBatch batch, int x, int y, float health) {
-        batch.setColor(Color.BLACK);
-        drawRect(batch, x * TILE_WIDTH, (y + 1) * TILE_HEIGHT - 1, TILE_WIDTH, 3);
         batch.setColor(Color.RED);
         batch.draw(one, x * TILE_WIDTH + 1, (y + 1) * TILE_HEIGHT, 6 * health, 1);
+        batch.setColor(Color.BLACK);
+        drawRect(batch, x * TILE_WIDTH, (y + 1) * TILE_HEIGHT - 1, TILE_WIDTH, 3);
         batch.setColor(Color.WHITE);
     }
 
@@ -145,6 +149,10 @@ public class GameScreen implements Screen, Disposable {
         batch.draw(one, x + 1, y, width - 1, 1);
         batch.draw(one, x, y, 1, height - 1);
         batch.draw(one, x, y + height - 1, width - 1, 1);
+    }
+
+    public void drawSquareOverTile(SpriteBatch batch, int x, int y) {
+        batch.draw(one, x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     }
 
     @Override

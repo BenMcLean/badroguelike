@@ -29,7 +29,7 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
         reset();
     }
 
-    public void reset() {
+    public OrthogonalTiledMapIterator reset() {
         float width = camera.viewportWidth * camera.zoom;
         float height = camera.viewportHeight * camera.zoom;
         viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
@@ -48,6 +48,8 @@ public class OrthogonalTiledMapIterator implements Iterator<Coord> {
 
         y = y2 - 1;
         x = x1 - 1;
+
+        return this;
     }
 
     @Override
