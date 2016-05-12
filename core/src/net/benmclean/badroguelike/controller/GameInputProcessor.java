@@ -90,6 +90,7 @@ public class GameInputProcessor implements InputProcessor {
     }
 
     public void moveFromInput(int keycode) {
+        boolean moved = true;
         switch (keycode) {
             case Input.Keys.ESCAPE:
                 Gdx.app.exit();
@@ -105,6 +106,10 @@ public class GameInputProcessor implements InputProcessor {
             case Input.Keys.LEFT:
                 world.movePlayer(Direction.WEST);
                 break;
+            default:
+                moved=false;
+                break;
         }
+        if (moved) world.endTurn();
     }
 }

@@ -28,7 +28,7 @@ public class GameScreen implements Screen, Disposable {
     public static final int TILE_WIDTH = 8;
     public static final int TILE_HEIGHT = 8;
     public Assets assets = new Assets();
-    private Color worldBackgroundColor = Color.DARK_GRAY;
+    private Color worldBackgroundColor = Color.BLACK;
     private Color screenBackgroundColor = Color.BLACK;
     private Viewport worldView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     private Viewport screenView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
@@ -105,6 +105,12 @@ public class GameScreen implements Screen, Disposable {
                         here.getX() * TILE_WIDTH,
                         here.getY() * TILE_HEIGHT
                 );
+            float light = (float)world.light[here.getX()][here.getY()];
+            if (light < 1f) {
+                batch.setColor(0f, 0f, 0f, 1-light);
+                drawSquareOverTile(batch, here.getX(), here.getY());
+                batch.setColor(Color.WHITE);
+            }
         }
         visibleIterator.reset();
         while (visibleIterator.hasNext()) {

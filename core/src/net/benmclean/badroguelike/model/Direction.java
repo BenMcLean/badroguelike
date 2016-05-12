@@ -15,8 +15,7 @@ public enum Direction {
     public int dy() { return dy; }
 
     public static Direction getRandomDirection(){
-        int len = Direction.values().length - 1;
-        return Direction.values()[(int)(Math.random() * len)];
+        return Direction.values()[(int)(Math.random() * (Direction.values().length - 1))];
     }
 
     public Direction opposite() { return opposite(this); }
