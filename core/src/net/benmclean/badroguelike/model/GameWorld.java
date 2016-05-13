@@ -17,7 +17,7 @@ public class GameWorld {
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private DungeonUtility dungeonUtil = new DungeonUtility();
     private FOV fov = new FOV();
-    private char[][] bareDungeon, lineDungeon;
+    private char[][] bareDungeon;
     public LazySpatialMap<Mob> mobs = new LazySpatialMap<Mob>();
     public int playerHP = 50;
     public int playerMaxHP = 100;
@@ -66,24 +66,33 @@ public class GameWorld {
         //for (boolean i[] : known) java.util.Arrays.fill(i, true);
 
         bareDungeon = dungeonGen.generate();
+        char[][] copyDungeon = new char[SIZE_X][];
+        for (int x=0; x<bareDungeon.length; x++) copyDungeon[x] = bareDungeon[x].clone();
 
+        Coord here = dungeonUtil.randomFloor(copyDungeon);
         playerSquidID = mobs.put(
-                dungeonUtil.randomFloor(bareDungeon),
+                here,
                 new Mob(Mob.Kind.HUMAN, 100, 100, true)
         );
+        copyDungeon[here.getX()][here.getY()] = '#';
 
         // Add a friend
+        here = dungeonUtil.randomFloor(copyDungeon);
         mobs.put(
-                dungeonUtil.randomFloor(bareDungeon),
+                here,
                 new Mob(Mob.Kind.HUMAN)
         );
+        copyDungeon[here.getX()][here.getY()] = '#';
 
         // Add baddies
-        for (int x = 0; x < 50; x++)
+        for (int x = 0; x < 50; x++) {
+            here = dungeonUtil.randomFloor(copyDungeon);
             mobs.put(
-                    dungeonUtil.randomFloor(bareDungeon),
+                    here,
                     new Mob(Mob.Kind.ORC, 50, 100)
             );
+            copyDungeon[here.getX()][here.getY()] = '#';
+        }
 
         updateLight();
     }
