@@ -125,7 +125,9 @@ public class GameScreen implements Screen, Disposable {
         while (visibleIterator.hasNext()) {
             Coord here = visibleIterator.next();
             Mob mob = world.mobs.get(here);
-            if (mob != null && mob.getHP() < mob.getMaxHP())
+            if (world.light[here.getX()][here.getY()] > visibilityThreshold
+                    && mob != null
+                    && mob.getHP() < mob.getMaxHP())
                 drawHealthBar(
                         batch,
                         here.getX(),
