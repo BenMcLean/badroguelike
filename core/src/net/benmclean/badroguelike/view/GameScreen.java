@@ -27,6 +27,7 @@ public class GameScreen implements Screen, Disposable {
     public static final int VIRTUAL_HEIGHT = 64;
     public static final int TILE_WIDTH = 8;
     public static final int TILE_HEIGHT = 8;
+    public static final double visibilityThreshold = 0.2d;
     public Assets assets = new Assets();
     private Color worldBackgroundColor = Color.BLACK;
     private Color screenBackgroundColor = Color.BLACK;
@@ -98,18 +99,26 @@ public class GameScreen implements Screen, Disposable {
         visibleIterator.reset();
         while (visibleIterator.hasNext()) {
             Coord here = visibleIterator.next();
-            Mob mob = world.mobs.get(here);
-            if (mob != null)
-                batch.draw(
-                        mob.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
-                        here.getX() * TILE_WIDTH,
-                        here.getY() * TILE_HEIGHT
-                );
-            float light = (float)world.light[here.getX()][here.getY()];
-            if (light < 1f) {
-                batch.setColor(0f, 0f, 0f, 1-light);
+            double light = world.light[here.getX()][here.getY()];
+
+            if (light < visibilityThreshold && world.known[here.getX()][here.getY()]) {
+                batch.setColor(0f, 0f, 0f, 1f-(float)visibilityThreshold);
                 drawSquareOverTile(batch, here.getX(), here.getY());
                 batch.setColor(Color.WHITE);
+            } else {
+                Mob mob = world.mobs.get(here);
+                if (mob != null)
+                    batch.draw(
+                            mob.getKind() == Mob.Kind.HUMAN ? assets.human : assets.orc,
+                            here.getX() * TILE_WIDTH,
+                            here.getY() * TILE_HEIGHT
+                    );
+
+                if (light < 1f) {
+                    batch.setColor(0f, 0f, 0f, 1f - (float) light);
+                    drawSquareOverTile(batch, here.getX(), here.getY());
+                    batch.setColor(Color.WHITE);
+                }
             }
         }
         visibleIterator.reset();

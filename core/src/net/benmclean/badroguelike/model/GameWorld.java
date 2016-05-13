@@ -12,6 +12,7 @@ public class GameWorld {
     public static final int SIZE_Y = 64;
     public boolean[][] known = new boolean[SIZE_X][SIZE_Y];
     public double[][] light;
+    public static final double visibilityThreshold = 0.00001d;
 
     private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
     private DungeonUtility dungeonUtil = new DungeonUtility();
@@ -62,7 +63,7 @@ public class GameWorld {
     }
 
     public GameWorld() {
-        for (boolean i[] : known) java.util.Arrays.fill(i, true);
+        //for (boolean i[] : known) java.util.Arrays.fill(i, true);
 
         bareDungeon = dungeonGen.generate();
 
@@ -92,6 +93,9 @@ public class GameWorld {
                 dungeonUtil.generateResistances(bareDungeon),
                 getPlayerX(), getPlayerY(),
                 8d);
+        for (int x=0; x<light.length; x++)
+            for (int y=0; y<light[x].length; y++)
+                if (light[x][y] > visibilityThreshold) known[x][y] = true;
     }
 
     public Boolean isWall(int x, int y) {
