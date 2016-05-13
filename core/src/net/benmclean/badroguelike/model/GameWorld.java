@@ -4,6 +4,7 @@ import squidpony.squidgrid.FOV;
 import squidpony.squidgrid.mapping.DungeonGenerator;
 import squidpony.squidgrid.mapping.DungeonUtility;
 import squidpony.squidmath.Coord;
+import squidpony.squidmath.RNG;
 import squidpony.squidmath.SquidID;
 
 public class GameWorld {
@@ -14,8 +15,10 @@ public class GameWorld {
     public double[][] light;
     public static final double visibilityThreshold = 0.00001d;
 
-    private DungeonGenerator dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y);
-    private DungeonUtility dungeonUtil = new DungeonUtility();
+    private long SEED;
+    private RNG rng;
+    private DungeonGenerator dungeonGen;
+    private DungeonUtility dungeonUtil;
     private FOV fov = new FOV();
     private char[][] bareDungeon;
     public LazySpatialMap<Mob> mobs = new LazySpatialMap<Mob>();
@@ -62,8 +65,11 @@ public class GameWorld {
         return false;
     }
 
-    public GameWorld() {
+    public GameWorld(long SEED) {
         //for (boolean i[] : known) java.util.Arrays.fill(i, true);
+        rng = new RNG(SEED);
+        dungeonGen = new DungeonGenerator(SIZE_X, SIZE_Y, rng);
+        dungeonUtil = new DungeonUtility(rng);
 
         bareDungeon = dungeonGen.generate();
         char[][] copyDungeon = new char[SIZE_X][];

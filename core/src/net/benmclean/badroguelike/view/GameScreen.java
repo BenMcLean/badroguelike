@@ -23,6 +23,16 @@ import net.benmclean.utils.OrthogonalTiledMapIterator;
 import squidpony.squidmath.Coord;
 
 public class GameScreen implements Screen, Disposable {
+    public GameScreen () {
+        this(42);
+    }
+
+    public GameScreen (long SEED) {
+        this.SEED = SEED;
+        world = new GameWorld(SEED);
+    }
+
+    public long SEED;
     public static final int VIRTUAL_WIDTH = 64;
     public static final int VIRTUAL_HEIGHT = 64;
     public static final int TILE_WIDTH = 8;
@@ -41,8 +51,8 @@ public class GameScreen implements Screen, Disposable {
     private TextureRegion screenRegion = new TextureRegion();
     private Texture one;
     private OrthogonalTiledMapIterator visibleIterator;
-    public GameWorld world = new GameWorld();
-    public GameInputProcessor input = new GameInputProcessor(world);
+    public GameWorld world;
+    public GameInputProcessor input;
 
     public static TiledMapTileLayer.Cell makeCell(TiledMapTile tile) {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -78,6 +88,7 @@ public class GameScreen implements Screen, Disposable {
         visibleIterator = new OrthogonalTiledMapIterator((OrthographicCamera) worldView.getCamera(), layer);
 
         batch.enableBlending();
+        input = new GameInputProcessor(world);
         Gdx.input.setInputProcessor(input);
     }
 
