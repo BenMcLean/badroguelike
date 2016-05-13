@@ -1,6 +1,8 @@
 package net.benmclean.badroguelike.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -9,6 +11,7 @@ import com.badlogic.gdx.utils.Disposable;
  * I am using this tileset here: http://opengameart.org/content/rogue-dungeon
  */
 public class Assets implements Disposable {
+    public Texture one;
     public TextureAtlas atlas;
     public TextureAtlas.AtlasRegion[] character = new TextureAtlas.AtlasRegion[32];
     public TextureAtlas.AtlasRegion[] environment = new TextureAtlas.AtlasRegion[78];
@@ -32,6 +35,12 @@ public class Assets implements Disposable {
     }
 
     public Assets () {
+        Pixmap pixmap1 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap1.drawPixel(0, 0, -1);
+        one = new Texture(pixmap1);
+        one.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        pixmap1.dispose();
+
         atlas = new TextureAtlas(Gdx.files.internal("roguedungeon/pack.atlas"));
 
         for (int x=0; x < character.length; x++) {
@@ -58,5 +67,6 @@ public class Assets implements Disposable {
 
     public void dispose() {
         atlas.dispose();
+        one.dispose();
     }
 }

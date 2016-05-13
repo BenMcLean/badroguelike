@@ -49,7 +49,6 @@ public class GameScreen implements Screen, Disposable {
     private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_HEIGHT, VIRTUAL_WIDTH, true, true);
     private Texture screenTexture;
     private TextureRegion screenRegion = new TextureRegion();
-    private Texture one;
     private OrthogonalTiledMapIterator visibleIterator;
     public GameWorld world;
     public GameInputProcessor input;
@@ -62,12 +61,6 @@ public class GameScreen implements Screen, Disposable {
 
     @Override
     public void show() {
-        Pixmap pixmap1 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap1.drawPixel(0, 0, -1);
-        one = new Texture(pixmap1);
-        one.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        pixmap1.dispose();
-
         MapLayers layers = map.getLayers();
         TiledMapTileLayer layer = new TiledMapTileLayer(world.SIZE_X, world.SIZE_Y, TILE_HEIGHT, TILE_WIDTH);
         for (int x = 0; x < world.SIZE_X; x++) {
@@ -166,21 +159,21 @@ public class GameScreen implements Screen, Disposable {
 
     public void drawHealthBar(SpriteBatch batch, int x, int y, float health) {
         batch.setColor(Color.RED);
-        batch.draw(one, x * TILE_WIDTH + 1, (y + 1) * TILE_HEIGHT, 6 * health, 1);
+        batch.draw(assets.one, x * TILE_WIDTH + 1, (y + 1) * TILE_HEIGHT, 6 * health, 1);
         batch.setColor(Color.BLACK);
         drawRect(batch, x * TILE_WIDTH, (y + 1) * TILE_HEIGHT - 1, TILE_WIDTH, 3);
         batch.setColor(Color.WHITE);
     }
 
     public void drawRect(SpriteBatch batch, int x, int y, int width, int height) {
-        batch.draw(one, x + width - 1, y + 1, 1, height - 1);
-        batch.draw(one, x + 1, y, width - 1, 1);
-        batch.draw(one, x, y, 1, height - 1);
-        batch.draw(one, x, y + height - 1, width - 1, 1);
+        batch.draw(assets.one, x + width - 1, y + 1, 1, height - 1);
+        batch.draw(assets.one, x + 1, y, width - 1, 1);
+        batch.draw(assets.one, x, y, 1, height - 1);
+        batch.draw(assets.one, x, y + height - 1, width - 1, 1);
     }
 
     public void drawSquareOverTile(SpriteBatch batch, int x, int y) {
-        batch.draw(one, x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+        batch.draw(assets.one, x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     }
 
     @Override
@@ -193,7 +186,6 @@ public class GameScreen implements Screen, Disposable {
         batch.dispose();
         frameBuffer.dispose();
         assets.dispose();
-        one.dispose();
     }
 
     @Override
