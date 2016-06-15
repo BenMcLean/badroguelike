@@ -17,8 +17,8 @@ allprojects {
     version = '1.0'
     ext {
         appName = "bad-roguelike"
-        squidlibVersion = 'b022961944' // https://jitpack.io/#SquidPony/SquidLib
-        gdxVersion = '1.9.2'
+        squidlibVersion = 'b21b8663fb' // https://jitpack.io/#SquidPony/SquidLib
+        gdxVersion = '1.9.3'
         roboVMVersion = '1.12.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
