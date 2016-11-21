@@ -31,7 +31,7 @@ public class GraphicsViewer implements Screen, InputProcessor {
     private Viewport worldView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     private Viewport screenView = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     private SpriteBatch batch =  new SpriteBatch();
-    private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_HEIGHT, VIRTUAL_WIDTH, true, true);
+    private FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, true, true);
     private Texture screenTexture;
     private TextureRegion screenRegion = new TextureRegion();
     private BitmapFont font = new BitmapFont(Gdx.files.internal("tiny/tiny.fnt"));
@@ -44,7 +44,7 @@ public class GraphicsViewer implements Screen, InputProcessor {
             keyPressed[i] = false;
         font.setColor(Color.WHITE);
         screenView.getCamera().position.set(32, 32, 0);
-        screenView.update(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
+        screenView.update(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
         Gdx.input.setInputProcessor(this);
     }
 
